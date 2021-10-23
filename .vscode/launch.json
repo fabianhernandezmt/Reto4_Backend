@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Ciclo3Application<ciclo3>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "co.usa.ciclo3.reto3.Ciclo3Application",
+            "projectName": "ciclo3",
+            "args": ""
+        }
+    ]
+}
