@@ -1,10 +1,17 @@
 package co.usa.ciclo3.reto3.service;
 
+import co.usa.ciclo3.reto3.Reportes.ContadorClientes;
+import co.usa.ciclo3.reto3.Reportes.StatusReservas;
 import co.usa.ciclo3.reto3.model.Reservation;
 import co.usa.ciclo3.reto3.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.annotation.Retention;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +31,10 @@ public class ReservationService {
 
     public Reservation save(Reservation p){
         if(p.getIdReservation()==null){
-            p.setStatus("created");
             return reservationRepository.save(p);
         }else{
             Optional<Reservation> paux=reservationRepository.getReservation(p.getIdReservation());
             if(paux.isEmpty()){
-                p.setStatus("created");
                 return reservationRepository.save(p);
             }else{
                 return p;
@@ -68,5 +73,37 @@ public class ReservationService {
         }).orElse(false);
         return aBoolean;
     }
+ 
+    public StatusReservas getReporteStatusReservaciones (){
+        List<Reservation>completed=reservationRepository.ReservationStatus("completed");
+        List<Reservation>cancelled=reservationRepository.ReservationStatus("cancelled");
+        return new StatusReservas(completed.size(), cancelled.size());
+    }
+
+
+    public List<Reservation> getReporteTiempoReservaciones (String dateA, String dateB){
+        SimpleDateFormat parser=new SimpleDateFormat("yyy-MM-dd");
+        Date datoUno = new Date();
+        Date datoDos = new Date();
+
+        try{
+            datoUno = parser.parse(dateA);
+            datoDos = parser.parse(dateB);
+        }catch(ParseException evt){
+            evt.printStackTrace();
+        }if(datoUno.before(datoDos)){
+            return reservationRepository.ReservationTime(datoUno, datoDos);
+        }else{
+            return new ArrayList<>();
+        }
+    
+     
+    }
+
+    public List<ContadorClientes> getTopClientes(){
+        return reservationRepository.getTopClientes();
+        
+    }
+
 
 }

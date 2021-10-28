@@ -1,10 +1,14 @@
 package co.usa.ciclo3.reto3.repository;
 
+import co.usa.ciclo3.reto3.Reportes.ContadorClientes;
+import co.usa.ciclo3.reto3.model.Client;
 import co.usa.ciclo3.reto3.model.Reservation;
 import co.usa.ciclo3.reto3.repository.crud.ReservationCrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +31,24 @@ public class ReservationRepository {
 
     public void delete(Reservation p){
         reservationCrudRepository.delete(p);
+    }
+
+    public List<Reservation> ReservationStatus (String status){
+        return reservationCrudRepository.findAllByStatus(status);
+    }
+
+    public List<Reservation> ReservationTime (Date a, Date b) {
+        return reservationCrudRepository.findAllByStartDateAfterAndStartDateBefore(a, b);
+    }
+
+    public List<ContadorClientes> getTopClientes() {
+        List<ContadorClientes> res=new ArrayList<>();
+        List<Object[]>report = reservationCrudRepository.countTotalReservationsByClient();
+        for(int i=0; i<report.size();i++){
+            res.add(new ContadorClientes((Long)report.get(i)[1],(Client) report.get(i)[0]));
+        }
+        return res;
+
     }
 
 }
